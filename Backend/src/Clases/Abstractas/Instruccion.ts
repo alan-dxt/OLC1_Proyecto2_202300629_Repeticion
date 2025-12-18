@@ -1,0 +1,13 @@
+import { tipoInstruccion } from "../Utilidades/TipoInstruccion";
+
+export abstract class Instruccion {
+    constructor(
+        public linea: number,
+        public columna: number,
+        public tipoIstruccion: tipoInstruccion
+    ){
+
+    }
+
+    public abstract ejecutar(entorno: any): any;
+}

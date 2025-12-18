@@ -1,0 +1,44 @@
+import { Expresion } from "../Abstractas/Expresion";
+import { Entorno } from "../Entorno/Entorno";
+import { Tipo, TipoRetorno } from "../Utilidades/Tipo";
+import { TipoExpresion } from "../Utilidades/TipoExpresion";
+
+export class Primitivo extends Expresion{
+    constructor(
+        linea: number,
+        columna: number,
+        public valor: any,
+        public tipo: Tipo
+    ){
+        super(linea, columna, TipoExpresion.PRIMITIVO)
+    }
+
+    public ejecutar(_: Entorno): TipoRetorno {
+        switch(this.tipo){
+            case(Tipo.ENTERO):
+                console.log("->Booleano Reconocido, valor: " + this.valor + "  tipo: " + this.tipo)
+                return {valor: parseInt(this.valor), tipo: this.tipo}
+            case(Tipo.DOUBLE):
+                console.log("->Booleano Reconocido, valor: " + this.valor + "  tipo: " + this.tipo)
+                return {valor: parseFloat(this.valor), tipo: this.tipo}
+            case(Tipo.CARACTER):
+                this.valor = this.valor.substring(1, this.valor.length - 1)
+                console.log("->Booleano Reconocido, valor: " + this.valor + "  tipo: " + this.tipo)
+                return {valor: this.valor, tipo: this.tipo}
+            case(Tipo.BOOLEANO):
+                console.log("->Booleano Reconocido, valor: " + this.valor + "  tipo: " + this.tipo)
+                return {valor: this.valor, tipo: this.tipo}
+            case(Tipo.CADENA):
+                this.valor = this.valor.substring(1, this.valor.length - 1)
+                this.valor = this.valor.replace(/\\n/g, '\n')
+                this.valor = this.valor.replace(/\\t/g, '\t')
+                this.valor = this.valor.replace(/\\"/g, '\"')
+                this.valor = this.valor.replace(/\\'/g, '\'')
+                this.valor = this.valor.replace(/\\\\/g, '\\')
+                console.log("->Cadena Reconocida, valor: " + this.valor + "  tipo: " + this.tipo)
+                return { valor: this.valor, tipo: this.tipo };
+            default:
+                throw new Error(`Primitivo ${this.valor} no soportado`)
+        }
+    }
+}
