@@ -1,31 +1,48 @@
-import { salidasConsola } from "../Utilidades/Salida";
+import { errores, salidasConsola } from "../Utilidades/Salida";
 import { Tipo } from "../Utilidades/Tipo";
 import { Simbolo } from "./Simbolo";
 import { SimboloTabla } from "./SimboloTabla";
 import { tablaSimbolos } from "./Tabla";
 import { Funcion } from "../Instrucciones/Funcion";
+import { Procedimiento } from "../Instrucciones/Procedimiento";
+import { Error } from "../Utilidades/Error";
+import { TipoError } from "../Utilidades/TipoError";
 
+//Espacio de almacenamiento de lo que se ejecuta
+//Entorno <--> Bloque
+//Sin Entorno no existe memoria
 export class Entorno {
-    public ids: Map<string, Simbolo> = new Map<string, Simbolo>()
-    public objetos: Map<string, any> = new Map<string, any>()
-    public funciones: Map<string, any> = new Map<string, any>
+    public ids: Map<string, Simbolo> = new Map<string, Simbolo>()                           //Variables
+    public objetos: Map<string, any> = new Map<string, any>()                               //Objetos 
+    public funciones: Map<string, Funcion> = new Map<string, Funcion>()                     //Funciones
+    public procedimientos: Map<string, Procedimiento> = new Map<string, Procedimiento>()    //Procedimientos
 
     constructor(
         private anterior: Entorno | null,
         public nombre: string
-    ){
+    ){}
 
-    }
+    public guardarVariable(
+        id: string,
+        valor: any,
+        tipo: Tipo,
+        linea: number,
+        columna: number){
 
-    public guardarVariable(id: string, valor: any, tipo: Tipo, linea: number, columna: number){
-        let entornoActual: Entorno = this;
-        if(!entornoActual.ids.has(id)){
-            //Si la id de la variable no existe, se guarda
-            entornoActual.ids.set(id, new Simbolo(valor, id, tipo))
-            //Insertar en la tabla de simbolos
-            tablaSimbolos.agregarSimbolo(new SimboloTabla(linea, columna, true, true, tipo, id, entornoActual.nombre))
+        if(this.ids.has(id)){
+            //La variable ya existe
+            errores.push(new Error(
+                linea, 
+                columna,
+                TipoError.SEMANTICO,
+                `La variable '${id}' ya existe en el ámbito ${this.nombre}`
+            ))
+            return
         }
-        //Error semantico, la variable ya existe
+        //La variable no existe aun
+        //se agrega a las id's y a la tabla
+        this.ids.set(id,new Simbolo(valor, id, tipo))
+        tablaSimbolos.agregarSimbolo(new SimboloTabla(linea, columna, true, true, tipo, id, this.nombre))
     }
 
     public getVariable(id: string): Simbolo | null {
@@ -36,6 +53,13 @@ export class Entorno {
             }
             entorno = entorno.anterior
         }
+        //Agregar el error
+        errores.push(new Error(
+                0,
+                0,
+                TipoError.SEMANTICO,
+                `La variable '${id}' no existe`
+        ))
         return null
     }
 
@@ -44,20 +68,66 @@ export class Entorno {
         while(entorno != null){
             if(entorno.ids.has(id)){
                 entorno.ids.get(id)!.valor = valor
+                return
             }
             entorno = entorno.anterior
         }
+        errores.push(new Error(
+                        0,
+                        0,
+                        TipoError.SEMANTICO,
+                        `La variable '${id}' no existe`
+        ))
     }
 
     public guardarFuncion(id: string, funcion: Funcion){
-        let entornoActual: Entorno = this
-        if(!entornoActual.funciones.has(id)){
-            //La funcion es guardada
-            entornoActual.funciones.set(id, funcion)
-            //Se inserta en la tabla de simbolos
-            tablaSimbolos.agregarSimbolo(new SimboloTabla(funcion.linea, funcion.columna, false, false, funcion.tipo, id, entornoActual.nombre))
+        if(this.funciones.has(id)){
+            //La funcion ya existe
+            errores.push(new Error(
+                            funcion.linea,
+                            funcion.columna,
+                            TipoError.SEMANTICO,
+                            `La funcion '${id}' ya existe`
+                        ))
+            return
         }
-        //Error semantico: la funcion ya existe
+        //La funcion no existe todavia
+        //Se guarda en la lista de funciones y en la tabla
+        this.funciones.set(id, funcion)
+        tablaSimbolos.agregarSimbolo(new SimboloTabla(
+                                        funcion.linea,
+                                        funcion.columna,
+                                        false,
+                                        false,
+                                        funcion.tipo,
+                                        id,
+                                        this.nombre
+                                    ))
+    }
+
+    public guardarProcedimiento(id: string, procedimiento: Procedimiento){
+        if(this.procedimientos.has(id) || this.funciones.has(id) || this.ids.has(id)){
+            //La id del procedimiento ya se encuentra ocupada
+            errores.push(new Error(
+                            procedimiento.linea,
+                            procedimiento.columna,
+                            TipoError.SEMANTICO,
+                            `La id '${id}' del procedimiento ya se encuentra en uso`
+                        ))
+            return
+        }
+        //El procedimineto no existe todavia
+        //Se guarda en la lista de procedimientos y en la tabla(No tiene valor de retorno - NULL)
+        this.procedimientos.set(id, procedimiento)
+        tablaSimbolos.agregarSimbolo(new SimboloTabla(
+                                        procedimiento.linea,
+                                        procedimiento.columna,
+                                        false,
+                                        false,
+                                        Tipo.NULL,
+                                        id,
+                                        this.nombre
+                                    ))
     }
 
     public getFuncion(id: string): Funcion | null {
@@ -65,6 +135,17 @@ export class Entorno {
         while (entorno != null){
             if(entorno.funciones.has(id)){
                 return entorno.funciones.get(id)!
+            }
+            entorno = entorno.anterior
+        }
+        return null
+    }
+
+    public gerProcedimiento(id: string): Procedimiento | null {
+        let entorno: Entorno | null = this
+        while (entorno != null){
+            if(entorno.procedimientos.has(id)){
+                return entorno.procedimientos.get(id)!
             }
             entorno = entorno.anterior
         }
