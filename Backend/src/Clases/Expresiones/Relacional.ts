@@ -40,8 +40,8 @@ export class Relacional extends Expresion{
         const valor2 = this.exp2.ejecutar(entorno)
         this.tipo = Tipo.BOOLEANO
 
-        if(valor1.tipo === Tipo.ENTERO || valor1.tipo ===Tipo.DOUBLE || valor1.tipo === Tipo.CARACTER){
-            if(valor2.tipo === Tipo.ENTERO || valor2.tipo ===Tipo.DOUBLE || valor2.tipo === Tipo.CARACTER){
+        if(valor1.tipo === Tipo.ENTERO || valor1.tipo ===Tipo.DECIMAL || valor1.tipo === Tipo.CARACTER){
+            if(valor2.tipo === Tipo.ENTERO || valor2.tipo ===Tipo.DECIMAL || valor2.tipo === Tipo.CARACTER){
                 //12 == '12' -> true
                 // 12 === '12' -> false
                 return {valor: valor1.valor === valor2.valor, tipo: this.tipo}
@@ -57,8 +57,8 @@ export class Relacional extends Expresion{
         const valor1 = this.exp1.ejecutar(entorno)
         const valor2 = this.exp2.ejecutar(entorno)
 
-        if(valor1.tipo === Tipo.ENTERO || valor1.tipo === Tipo.DOUBLE){
-            if(valor2.tipo === Tipo.ENTERO || valor2.tipo === Tipo.DOUBLE){
+        if(valor1.tipo === Tipo.ENTERO || valor1.tipo === Tipo.DECIMAL){
+            if(valor2.tipo === Tipo.ENTERO || valor2.tipo === Tipo.DECIMAL){
                 return {valor: valor1.valor > valor2.valor, tipo: this.tipo}
             }
         }
@@ -70,8 +70,8 @@ export class Relacional extends Expresion{
         const valor1 = this.exp1.ejecutar(entorno)
         const valor2 = this.exp2.ejecutar(entorno)
 
-        if(valor1.tipo === Tipo.ENTERO || valor1.tipo === Tipo.DOUBLE){
-            if(valor2.tipo === Tipo.ENTERO || valor2.tipo === Tipo.DOUBLE){
+        if(valor1.tipo === Tipo.ENTERO || valor1.tipo === Tipo.DECIMAL){
+            if(valor2.tipo === Tipo.ENTERO || valor2.tipo === Tipo.DECIMAL){
                 return {valor: valor1.valor >= valor2.valor, tipo: this.tipo}
             }
         }
@@ -83,8 +83,8 @@ export class Relacional extends Expresion{
         const valor1 = this.exp1.ejecutar(entorno)
         const valor2 = this.exp2.ejecutar(entorno)
 
-        if(valor1.tipo === Tipo.ENTERO || valor1.tipo === Tipo.DOUBLE){
-            if(valor2.tipo === Tipo.ENTERO || valor2.tipo === Tipo.DOUBLE){
+        if(valor1.tipo === Tipo.ENTERO || valor1.tipo === Tipo.DECIMAL){
+            if(valor2.tipo === Tipo.ENTERO || valor2.tipo === Tipo.DECIMAL){
                 return {valor: valor1.valor < valor2.valor, tipo: this.tipo}
             }
         }
@@ -96,8 +96,8 @@ export class Relacional extends Expresion{
         const valor1 = this.exp1.ejecutar(entorno)
         const valor2 = this.exp2.ejecutar(entorno)
 
-        if(valor1.tipo === Tipo.ENTERO || valor1.tipo === Tipo.DOUBLE){
-            if(valor2.tipo === Tipo.ENTERO || valor2.tipo === Tipo.DOUBLE){
+        if(valor1.tipo === Tipo.ENTERO || valor1.tipo === Tipo.DECIMAL){
+            if(valor2.tipo === Tipo.ENTERO || valor2.tipo === Tipo.DECIMAL){
                 return {valor: valor1.valor <= valor2.valor, tipo: this.tipo}
             }
         }
@@ -110,8 +110,8 @@ export class Relacional extends Expresion{
         const valor2 = this.exp2.ejecutar(entorno)
         this.tipo = Tipo.BOOLEANO
 
-        if(valor1.tipo === Tipo.ENTERO || valor1.tipo ===Tipo.DOUBLE || valor1.tipo === Tipo.CARACTER){
-            if(valor2.tipo === Tipo.ENTERO || valor2.tipo ===Tipo.DOUBLE || valor2.tipo === Tipo.CARACTER){
+        if(valor1.tipo === Tipo.ENTERO || valor1.tipo ===Tipo.DECIMAL || valor1.tipo === Tipo.CARACTER){
+            if(valor2.tipo === Tipo.ENTERO || valor2.tipo ===Tipo.DECIMAL || valor2.tipo === Tipo.CARACTER){
                 //12 == '12' -> true
                 // 12 === '12' -> false
                 return {valor: valor1.valor != valor2.valor, tipo: this.tipo}

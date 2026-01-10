@@ -68,6 +68,7 @@ CHAR        \'([^\\']|\\.)\'
 '{'                 {return 'TK_llaveAbre'}
 '}'                 {return 'TK_llaveCierra'}
 ';'                 {return 'TK_puntoComa'}
+','                 {return 'TK_coma'}
 
 .                   {}
 <<EOF>>             {return 'EOF'}
@@ -79,7 +80,32 @@ CHAR        \'([^\\']|\\.)\'
 //------------------------------------------------------ANALIZADOR SINTACTICO------------------------------------------------------
 %{
     //Javascript
+
+    //Tipos
+    const { Tipo } = require('../Clases/Utilidades/Tipo')
+
+    //Expresiones
+    const { Primitivo } = require('../Clases/Expresiones/Primitivo');
+    const { Aritmetico } = require('../Clases/Expresiones/Aritmetico');
+    const { AccesoId} = require('../Clases/Expresiones/AccesoID');
+
+    //Instrucciones
+    const { Imprimir } = require('../Clases/Instrucciones/Imprimir');
+    const { DeclaracionID } = require('../Clases/Instrucciones/DeclaracionID')
 %}
+
+//Precedencia de operadores
+%left 'TK_or'
+%left 'TK_and'
+%left 'TK_igualdad', 'TK_distinto'
+%left 'TK_mayorIgual', 'TK_menorIgual', 'TK_menor', 'TK_mayor'
+%left 'TK_mas', 'TK_potencia'
+%left 'TK_mas', 'TK_menos'
+%left 'TK_multiplicacion', 'TK_division', 'TK_modulo'
+%left 'TK_parAbre', 'TK_parCierra'
+
+%right 'TK_not'
+%right 'TK_potencia'
 
 
 //Gramatica
@@ -87,8 +113,69 @@ CHAR        \'([^\\']|\\.)\'
 
 %%
 
-INICIO
-    :    ;
+INICIO:
+    INSTRUCCIONES EOF       {return $1} |
+    EOF                         {return []};
+    
+INSTRUCCIONES:
+    INSTRUCCIONES INSTRUCCION   {$$.push($2)}   |
+    INSTRUCCION                 {$$ = [$1]}     ;
 
-%%
+INSTRUCCION:
+    IMPRIMIR                {$$ = $1}   |
+    DECLARACION_VARIABLE    {$$ = $1}   |
+    REASIGNACION            {$$ = $1};
+
+    IMPRIMIR:
+        TK_imprimir EXPRESION TK_puntoComa {$$ = new Imprimir(@1.first_line, @1.first_column, $2)};
+
+    DECLARACION_VARIABLE:
+        TIPO_DATO LISTA_IDS TK_con TK_valor LISTA_VALORES TK_puntoComa      {$$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, $5)}    |
+        TIPO_DATO LISTA_IDS TK_puntoComa                                    {$$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, null)};
+
+        LISTA_IDS:
+            LISTA_IDS TK_coma TK_id     {$$.push($3)}   |
+            TK_id               {$$ = [$1]};
+
+        LISTA_VALORES:
+            LISTA_VALORES TK_coma EXPRESION   {$$.push($3)}   |
+            EXPRESION           {$$ = [$1]};
+
+    REASIGNACION:
+        TK_id TK_asignacion EXPRESION TK_puntoComa;
+    
+    EXPRESION:
+        ARITMETICA      {$$ = $1}   |
+        PRIMITIVO       {$$ = $1}   |
+        TK_id           {$$ = new AccesoID(@1.first_line, @1.first_column, $1)};
+
+
+    
+
+
+    ARITMETICA:
+        PRIMITIVO SIMBOLO_BASICO PRIMITIVO    {$$ = new Aritmetico(@1.first_line, @1.first_column, $1, $2, $3)};
+
+    PRIMITIVO:
+        TK_int          {$$ = new Primitivo(@1.first_line, @1.first_column, $1, Tipo.ENTERO)}       |
+        TK_double       {$$ = new Primitivo(@1.first_line, @1.first_column, $1, Tipo.DECIMAL)}      |
+        TK_string       {$$ = new Primitivo(@1.first_line, @1.first_column, $1, Tipo.CADENA)}       |
+        TK_char         {$$ = new Primitivo(@1.first_line, @1.first_column, $1, Tipo.CARACTER)};
+
+    SIMBOLO_BASICO:
+        TK_mas              {$$ = $1}   |
+        TK_menos            {$$ = $1}   |
+        TK_division         {$$ = $1}   |
+        TK_multiplicacion   {$$ = $1}   |
+        TK_modulo           {$$ = $1}   |
+        TK_potencia         {$$ = $1};
+
+    TIPO_DATO:
+        TK_entero       {$$ = Tipo.ENTERO}      |
+        TK_decimal      {$$ = Tipo.DECIMAL}     |
+        TK_cadena       {$$ = Tipo.CADENA}      |
+        TK_caracter     {$$ = Tipo.CARACTER}    |
+        TK_booleano     {$$ = Tipo.BOOLEANO};    
+
+
 

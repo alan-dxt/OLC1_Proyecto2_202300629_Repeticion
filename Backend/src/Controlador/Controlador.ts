@@ -10,11 +10,11 @@ export class Controlador {
     }
 
     public parserFile(req: Request, res: Response){
-        console.log(req.body)
+        //console.log(req.body)
         let file = req.body.file
         let parser = require('../Lenguaje/Parser')
         var fs = require('fs')
-        console.log('\x18c')
+        console.log('\x1Bc');
         console.log(file)
         fs.readFile(file, 'utf-8', (err: Error, data: string) => {
             if(err){
@@ -34,7 +34,7 @@ export class Controlador {
                     catch(error){}
                 }
                 var out: string = getSalida()
-                                console.log()
+                console.log()
                 console.log()
                 console.log('\x1b[32mXNK SimpleCode\x1b[0m')
                 console.log(out)

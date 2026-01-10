@@ -22,7 +22,7 @@ export class SimboloTabla {
         switch(tipo){
             case Tipo.ENTERO:
                 return "entero";
-            case Tipo.DOUBLE:
+            case Tipo.DECIMAL:
                 return "decimal";
             case Tipo.BOOLEANO:
                 return "booleano";

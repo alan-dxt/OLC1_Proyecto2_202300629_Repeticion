@@ -72,21 +72,78 @@
   }
 */
 var Parser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o};
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,7],$V1=[1,9],$V2=[1,10],$V3=[1,11],$V4=[1,12],$V5=[1,13],$V6=[5,21,32,33,34,35,36],$V7=[1,19],$V8=[1,20],$V9=[1,21],$Va=[1,22],$Vb=[1,23],$Vc=[14,15],$Vd=[14,15,26,27,28,29,30,31],$Ve=[11,14,15],$Vf=[22,23,24,25];
 var parser = {trace: function trace () { },
 yy: {},
-symbols_: {"error":2,"INICIO":3,"$accept":0,"$end":1},
-terminals_: {2:"error"},
-productions_: [0,[3,0]],
+symbols_: {"error":2,"INICIO":3,"INSTRUCCIONES":4,"EOF":5,"INSTRUCCION":6,"IMPRIMIR":7,"DECLARACION_VARIABLE":8,"TIPO_DATO":9,"LISTA_IDS":10,"TK_con":11,"TK_valor":12,"LISTA_VALORES":13,"TK_puntoComa":14,"TK_coma":15,"TK_id":16,"EXPRESION":17,"ARITMETICA":18,"PRIMITIVO":19,"SIMBOLO_BASICO":20,"TK_imprimir":21,"TK_int":22,"TK_double":23,"TK_string":24,"TK_char":25,"TK_mas":26,"TK_menos":27,"TK_division":28,"TK_multiplicacion":29,"TK_modulo":30,"TK_potencia":31,"TK_entero":32,"TK_decimal":33,"TK_cadena":34,"TK_caracter":35,"TK_booleano":36,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",11:"TK_con",12:"TK_valor",14:"TK_puntoComa",15:"TK_coma",16:"TK_id",21:"TK_imprimir",22:"TK_int",23:"TK_double",24:"TK_string",25:"TK_char",26:"TK_mas",27:"TK_menos",28:"TK_division",29:"TK_multiplicacion",30:"TK_modulo",31:"TK_potencia",32:"TK_entero",33:"TK_decimal",34:"TK_cadena",35:"TK_caracter",36:"TK_booleano"},
+productions_: [0,[3,2],[3,1],[4,2],[4,1],[6,1],[6,1],[8,6],[8,3],[10,3],[10,1],[13,3],[13,1],[17,1],[17,1],[17,1],[18,3],[7,3],[19,1],[19,1],[19,1],[19,1],[20,1],[20,1],[20,1],[20,1],[20,1],[20,1],[9,1],[9,1],[9,1],[9,1],[9,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
 switch (yystate) {
+case 1:
+return $$[$0-1]
+break;
+case 2:
+return []
+break;
+case 3: case 9: case 11:
+this.$.push($$[$0])
+break;
+case 4: case 10: case 12:
+this.$ = [$$[$0]]
+break;
+case 5: case 6: case 13: case 14: case 22: case 23: case 24: case 25: case 26: case 27:
+this.$ = $$[$0]
+break;
+case 7:
+this.$ = new DeclaracionID(_$[$0-5].first_line, _$[$0-5].first_column, $$[$0-4], $$[$0-5], $$[$0-1])
+break;
+case 8:
+this.$ = new DeclaracionID(_$[$0-2].first_line, _$[$0-2].first_column, $$[$0-1], $$[$0-2], null)
+break;
+case 15:
+this.$ = new AccesoID(_$[$0].first_line, _$[$0].first_column, $$[$0])
+break;
+case 16:
+this.$ = new Aritmetico(_$[$0-2].first_line, _$[$0-2].first_column, $$[$0-2], $$[$0-1], $$[$0])
+break;
+case 17:
+this.$ = new Imprimir(_$[$0-2].first_line, _$[$0-2].first_column, $$[$0-1])
+break;
+case 18:
+this.$ = new Primitivo(_$[$0].first_line, _$[$0].first_column, $$[$0], Tipo.ENTERO)
+break;
+case 19:
+this.$ = new Primitivo(_$[$0].first_line, _$[$0].first_column, $$[$0], Tipo.DECIMAL)
+break;
+case 20:
+this.$ = new Primitivo(_$[$0].first_line, _$[$0].first_column, $$[$0], Tipo.CADENA)
+break;
+case 21:
+this.$ = new Primitivo(_$[$0].first_line, _$[$0].first_column, $$[$0], Tipo.CARACTER)
+break;
+case 28:
+this.$ = Tipo.ENTERO
+break;
+case 29:
+this.$ = Tipo.DECIMAL
+break;
+case 30:
+this.$ = Tipo.CADENA
+break;
+case 31:
+this.$ = Tipo.CARACTER
+break;
+case 32:
+this.$ = Tipo.BOOLEANO
+break;
 }
 },
-table: [{1:[2,1],3:1},{1:[3]}],
-defaultActions: {},
+table: [{3:1,4:2,5:[1,3],6:4,7:5,8:6,9:8,21:$V0,32:$V1,33:$V2,34:$V3,35:$V4,36:$V5},{1:[3]},{5:[1,14],6:15,7:5,8:6,9:8,21:$V0,32:$V1,33:$V2,34:$V3,35:$V4,36:$V5},{1:[2,2]},o($V6,[2,4]),o($V6,[2,5]),o($V6,[2,6]),{16:$V7,17:16,18:17,19:18,22:$V8,23:$V9,24:$Va,25:$Vb},{10:24,16:[1,25]},{16:[2,28]},{16:[2,29]},{16:[2,30]},{16:[2,31]},{16:[2,32]},{1:[2,1]},o($V6,[2,3]),{14:[1,26]},o($Vc,[2,13]),o($Vc,[2,14],{20:27,26:[1,28],27:[1,29],28:[1,30],29:[1,31],30:[1,32],31:[1,33]}),o($Vc,[2,15]),o($Vd,[2,18]),o($Vd,[2,19]),o($Vd,[2,20]),o($Vd,[2,21]),{11:[1,34],14:[1,35],15:[1,36]},o($Ve,[2,10]),o($V6,[2,17]),{19:37,22:$V8,23:$V9,24:$Va,25:$Vb},o($Vf,[2,22]),o($Vf,[2,23]),o($Vf,[2,24]),o($Vf,[2,25]),o($Vf,[2,26]),o($Vf,[2,27]),{12:[1,38]},o($V6,[2,8]),{16:[1,39]},o($Vc,[2,16]),{13:40,16:$V7,17:41,18:17,19:18,22:$V8,23:$V9,24:$Va,25:$Vb},o($Ve,[2,9]),{14:[1,42],15:[1,43]},o($Vc,[2,12]),o($V6,[2,7]),{16:$V7,17:44,18:17,19:18,22:$V8,23:$V9,24:$Va,25:$Vb},o($Vc,[2,11])],
+defaultActions: {3:[2,2],9:[2,28],10:[2,29],11:[2,30],12:[2,31],13:[2,32],14:[2,1]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -241,7 +298,17 @@ parse: function parse(input) {
 
     //Javascript
 
+    //Tipos
+    const { Tipo } = require('../Clases/Utilidades/Tipo')
 
+    //Expresiones
+    const { Primitivo } = require('../Clases/Expresiones/Primitivo');
+    const { Aritmetico } = require('../Clases/Expresiones/Aritmetico');
+    const { AccesoId} = require('../Clases/Expresiones/AccesoID');
+
+    //Instrucciones
+    const { Imprimir } = require('../Clases/Instrucciones/Imprimir');
+    const { DeclaracionID } = require('../Clases/Instrucciones/DeclaracionID')
 /* generated by jison-lex 0.3.4 */
 var lexer = (function(){
 var lexer = ({
@@ -574,25 +641,25 @@ case 0:
 break;
 case 1:
 break;
-case 2:return 'TK_entero'
+case 2:return 32
 break;
-case 3:return 'TK_decimal'
+case 3:return 33
 break;
-case 4:return 'TK_cadena'
+case 4:return 34
 break;
-case 5:return 'TK_caracter'
+case 5:return 35
 break;
-case 6:return 'TK_booleano'
+case 6:return 36
 break;
 case 7:return 'TK_verdadero'
 break;
 case 8:return 'TK_falso'
 break;
-case 9:return 'TK_con'
+case 9:return 11
 break;
-case 10:return 'TK_valor'
+case 10:return 12
 break;
-case 11:return 'TK_imprimir'
+case 11:return 21
 break;
 case 12:return 'TK_if'
 break;
@@ -608,27 +675,27 @@ case 17:return 'TK_retornar'
 break;
 case 18:return 'TK_ejecutar'
 break;
-case 19:return 'TK_id'
+case 19:return 16
 break;
-case 20:return 'TK_string'
+case 20:return 24
 break;
-case 21:return 'TK_char'
+case 21:return 25
 break;
-case 22:return 'TK_double'
+case 22:return 23
 break;
-case 23:return 'TK_int'
+case 23:return 22
 break;
-case 24:return 'TK_mas'
+case 24:return 26
 break;
-case 25:return 'TK_modulo'
+case 25:return 30
 break;
-case 26:return 'TK_menos'
+case 26:return 27
 break;
-case 27:return 'TK_multiplicacion'
+case 27:return 29
 break;
-case 28:return 'TK_division'
+case 28:return 28
 break;
-case 29:return 'TK_potencia'
+case 29:return 31
 break;
 case 30:return 'TK_igualdad'
 break;
@@ -658,16 +725,18 @@ case 42:return 'TK_llaveAbre'
 break;
 case 43:return 'TK_llaveCierra'
 break;
-case 44:return 'TK_puntoComa'
+case 44:return 14
 break;
-case 45:
+case 45:return 15
 break;
-case 46:return 'EOF'
+case 46:
+break;
+case 47:return 5
 break;
 }
 },
-rules: [/^(?:\n)/,/^(?:([\s\r\t]+))/,/^(?:entero\b)/,/^(?:decimal\b)/,/^(?:cadena\b)/,/^(?:caracter\b)/,/^(?:booleano\b)/,/^(?:Verdadero\b)/,/^(?:False\b)/,/^(?:con\b)/,/^(?:valor\b)/,/^(?:imprimir\b)/,/^(?:si\b)/,/^(?:o\b)/,/^(?:para\b)/,/^(?:funcion\b)/,/^(?:procedimiento\b)/,/^(?:retornar\b)/,/^(?:ejecutar\b)/,/^(?:([a-zA-Z_][a-zA-Z0-9_]*))/,/^(?:("([^\"\\]|\\.)*"))/,/^(?:('([^\\']|\\.)'))/,/^(?:([0-9]+\.[0-9]+\b))/,/^(?:([0-9]+\b))/,/^(?:\+)/,/^(?:%)/,/^(?:-)/,/^(?:\*)/,/^(?:\/)/,/^(?:\^)/,/^(?:==)/,/^(?:!=)/,/^(?:=)/,/^(?:>=)/,/^(?:<=)/,/^(?:>)/,/^(?:<)/,/^(?:&&)/,/^(?:\|\|)/,/^(?:!)/,/^(?:\()/,/^(?:\))/,/^(?:\{)/,/^(?:\})/,/^(?:;)/,/^(?:.)/,/^(?:$)/],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46],"inclusive":true}}
+rules: [/^(?:\n)/,/^(?:([\s\r\t]+))/,/^(?:entero\b)/,/^(?:decimal\b)/,/^(?:cadena\b)/,/^(?:caracter\b)/,/^(?:booleano\b)/,/^(?:Verdadero\b)/,/^(?:False\b)/,/^(?:con\b)/,/^(?:valor\b)/,/^(?:imprimir\b)/,/^(?:si\b)/,/^(?:o\b)/,/^(?:para\b)/,/^(?:funcion\b)/,/^(?:procedimiento\b)/,/^(?:retornar\b)/,/^(?:ejecutar\b)/,/^(?:([a-zA-Z_][a-zA-Z0-9_]*))/,/^(?:("([^\"\\]|\\.)*"))/,/^(?:('([^\\']|\\.)'))/,/^(?:([0-9]+\.[0-9]+\b))/,/^(?:([0-9]+\b))/,/^(?:\+)/,/^(?:%)/,/^(?:-)/,/^(?:\*)/,/^(?:\/)/,/^(?:\^)/,/^(?:==)/,/^(?:!=)/,/^(?:=)/,/^(?:>=)/,/^(?:<=)/,/^(?:>)/,/^(?:<)/,/^(?:&&)/,/^(?:\|\|)/,/^(?:!)/,/^(?:\()/,/^(?:\))/,/^(?:\{)/,/^(?:\})/,/^(?:;)/,/^(?:,)/,/^(?:.)/,/^(?:$)/],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47],"inclusive":true}}
 });
 return lexer;
 })();

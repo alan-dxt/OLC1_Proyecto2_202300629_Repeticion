@@ -5,7 +5,7 @@ export var errores: Error[] = []
 
 export function getSalida(): string{
     var out = ''
-    for(let i: number = 0; salidasConsola.length; i++){
+    for(let i = 0; i < salidasConsola.length; i++){
         out += salidasConsola[i]
         if(i < salidasConsola.length -1){
             out += "\n"
