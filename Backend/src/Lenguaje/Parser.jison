@@ -87,11 +87,12 @@ CHAR        \'([^\\']|\\.)\'
     //Expresiones
     const { Primitivo } = require('../Clases/Expresiones/Primitivo');
     const { Aritmetico } = require('../Clases/Expresiones/Aritmetico');
-    const { AccesoId} = require('../Clases/Expresiones/AccesoID');
+    const { AccesoID} = require('../Clases/Expresiones/AccesoID');
 
     //Instrucciones
     const { Imprimir } = require('../Clases/Instrucciones/Imprimir');
-    const { DeclaracionID } = require('../Clases/Instrucciones/DeclaracionID')
+    const { DeclaracionID } = require('../Clases/Instrucciones/DeclaracionID');
+    const { Reasignacion } = require('../Clases/Instrucciones/Reasignacion');
 %}
 
 //Precedencia de operadores
@@ -142,7 +143,7 @@ INSTRUCCION:
             EXPRESION           {$$ = [$1]};
 
     REASIGNACION:
-        TK_id TK_asignacion EXPRESION TK_puntoComa;
+        TK_id TK_asignacion EXPRESION TK_puntoComa      {$$ = new Reasignacion(@1.first_line, @1.first_column, $1, $3)};
     
     EXPRESION:
         ARITMETICA      {$$ = $1}   |
@@ -150,7 +151,6 @@ INSTRUCCION:
         TK_id           {$$ = new AccesoID(@1.first_line, @1.first_column, $1)};
 
 
-    
 
 
     ARITMETICA:

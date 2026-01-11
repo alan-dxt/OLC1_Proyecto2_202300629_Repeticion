@@ -1,5 +1,5 @@
 import { errores, salidasConsola } from "../Utilidades/Salida";
-import { Tipo } from "../Utilidades/Tipo";
+import { Tipo, TipoRetorno } from "../Utilidades/Tipo";
 import { Simbolo } from "./Simbolo";
 import { SimboloTabla } from "./SimboloTabla";
 import { tablaSimbolos } from "./Tabla";
@@ -63,18 +63,32 @@ export class Entorno {
         return null
     }
 
-    public modificarVariable(id: string, valor: any){
+    public modificarVariable(id: string, nuevoValor: TipoRetorno, linea: number, columna: number){
         let entorno: Entorno | null = this
         while(entorno != null){
             if(entorno.ids.has(id)){
-                entorno.ids.get(id)!.valor = valor
+                const simbolo: Simbolo = entorno.ids.get(id)!
+                //Verificacion de los tipos
+                if(simbolo.tipo !== nuevoValor.tipo){
+                    errores.push(
+                        new Error(
+                            linea,
+                            columna,
+                            TipoError.SEMANTICO,
+                            `No se puede asignar un valor de tipo ${nuevoValor.tipo} a la variable ${id} de tipo ${Tipo[simbolo.tipo]}`
+                        )
+                    )
+                    return
+                }
+                //Reasignacion valida
+                simbolo.valor = nuevoValor.valor
                 return
             }
             entorno = entorno.anterior
         }
         errores.push(new Error(
-                        0,
-                        0,
+                        linea,
+                        columna,
                         TipoError.SEMANTICO,
                         `La variable '${id}' no existe`
         ))

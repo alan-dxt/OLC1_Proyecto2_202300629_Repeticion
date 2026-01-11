@@ -1,1 +1,4 @@
-entero a, b, c;
+entero a con valor 1;
+imprimir a;
+a=2;
+imprimir a;
