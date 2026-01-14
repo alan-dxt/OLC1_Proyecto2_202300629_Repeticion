@@ -1,6 +1,6 @@
 import { Expresion } from "../Abstractas/Expresion";
 import { Entorno } from "../Entorno/Entorno";
-import { resta, suma, multiplicacion, division, potencia } from "../Utilidades/OperacionDominante";
+import { resta, suma, multiplicacion, division, potencia, modulo } from "../Utilidades/OperacionDominante";
 import { Tipo, TipoRetorno } from "../Utilidades/Tipo";
 import { TipoExpresion } from "../Utilidades/TipoExpresion";
 
@@ -31,6 +31,8 @@ export class Aritmetico extends Expresion{
                 return this.division(entorno)
             case("^"):
                 return this.potencia(entorno)
+            case("%"):
+                return this.modulo(entorno)
             default:
                 throw new Error(`Operador ${this.signo} no soportado`);
         }
@@ -42,16 +44,16 @@ export class Aritmetico extends Expresion{
         this.tipo = suma[valor1.tipo][valor2.tipo]
         if(this.tipo != Tipo.NULL){
             if(this.tipo === Tipo.ENTERO){
-                console.log('SUMA -> Valor: ' + (valor1.valor + valor2.valor) + ' Tipo: ' + this.tipo)
+                //console.log('SUMA -> Valor: ' + (valor1.valor + valor2.valor) + ' Tipo: ' + this.tipo)
                 return {valor: Number(valor1.valor) + Number(valor2.valor),
                         tipo: this.tipo}
             } else if(this.tipo === Tipo.DECIMAL){
-                console.log('SUMA -> Valor: ' + (valor1.valor + valor2.valor) + ' Tipo: ' + this.tipo)
+                //console.log('SUMA -> Valor: ' + (valor1.valor + valor2.valor) + ' Tipo: ' + this.tipo)
                 return {valor: parseFloat(valor1.valor) + parseFloat(valor2.valor),
                         tipo: this.tipo}
             } else if(this.tipo === Tipo.CADENA){
-                console.log('SUMA -> Valor: ' + (valor1.valor + valor2.valor) + ' Tipo: ' + this.tipo)
-                return {valor: valor1.valor.toString + valor1.valor.toString,
+                //console.log('SUMA -> Valor: ' + (valor1.valor + valor2.valor) + ' Tipo: ' + this.tipo)
+                return {valor: valor1.valor + valor2.valor,
                         tipo: this.tipo}
             }
         }
@@ -64,11 +66,11 @@ export class Aritmetico extends Expresion{
         this.tipo = resta[valor1.tipo][valor2.tipo]
         if(this.tipo != Tipo.NULL){
             if(this.tipo === Tipo.ENTERO){
-                console.log('RESTA -> Valor: ' + (valor1.valor - valor2.valor) + ' Tipo: ' + this.tipo)
+                //console.log('RESTA -> Valor: ' + (valor1.valor - valor2.valor) + ' Tipo: ' + this.tipo)
                 return {valor: Number(valor1.valor) - Number(valor2.valor),
                         tipo: this.tipo}
             } else if(this.tipo === Tipo.DECIMAL){
-                console.log('RESTA -> Valor: ' + (valor1.valor - valor2.valor) + ' Tipo: ' + this.tipo)
+                //console.log('RESTA -> Valor: ' + (valor1.valor - valor2.valor) + ' Tipo: ' + this.tipo)
                 return {valor: parseFloat(valor1.valor) - parseFloat(valor2.valor),
                         tipo: this.tipo}
             }
@@ -82,11 +84,11 @@ export class Aritmetico extends Expresion{
         this.tipo = multiplicacion[valor1.tipo][valor2.tipo]
         if(this.tipo != Tipo.NULL){
             if(this.tipo === Tipo.ENTERO){
-                console.log('MULTIPLICACIÓN -> Valor: ' + (valor1.valor * valor2.valor) + ' Tipo: ' + this.tipo)
+                //console.log('MULTIPLICACIÓN -> Valor: ' + (valor1.valor * valor2.valor) + ' Tipo: ' + this.tipo)
                 return {valor: Number(valor1.valor) * Number(valor2.valor),
                         tipo: this.tipo}
             } else if(this.tipo === Tipo.DECIMAL){
-                console.log('MULTIPLICACIÓN -> Valor: ' + (valor1.valor * valor2.valor) + ' Tipo: ' + this.tipo)
+                //console.log('MULTIPLICACIÓN -> Valor: ' + (valor1.valor * valor2.valor) + ' Tipo: ' + this.tipo)
                 return {valor: parseFloat(valor1.valor) * parseFloat(valor2.valor),
                         tipo: this.tipo}
             }
@@ -100,7 +102,7 @@ export class Aritmetico extends Expresion{
         this.tipo = division[valor1.tipo][valor2.tipo]
         if(this.tipo != Tipo.NULL){
             if(this.tipo === Tipo.ENTERO || this.tipo == Tipo.DECIMAL){
-                console.log('DIVISIÓN -> Valor: ' + (valor1.valor / valor2.valor) + ' Tipo: ' + this.tipo)
+                //console.log('DIVISIÓN -> Valor: ' + (valor1.valor / valor2.valor) + ' Tipo: ' + this.tipo)
                 return {valor: Number(valor1.valor) / Number(valor2.valor),
                         tipo: Tipo.DECIMAL}
                 }
@@ -114,15 +116,26 @@ export class Aritmetico extends Expresion{
         this.tipo = potencia[valor1.tipo][valor2.tipo]
         if(this.tipo != Tipo.NULL){
             if(this.tipo === Tipo.ENTERO){
-                console.log('POTENCIA -> Valor: ' + (valor1.valor ** valor2.valor) + ' Tipo: ' + this.tipo)
+                //console.log('POTENCIA -> Valor: ' + (valor1.valor ** valor2.valor) + ' Tipo: ' + this.tipo)
                 return {valor: Number(valor1.valor) ** Number(valor2.valor),
                         tipo: this.tipo}
             } else if(this.tipo === Tipo.DECIMAL){
-                console.log('POTENCIA -> Valor: ' + (valor1.valor ** valor2.valor) + ' Tipo: ' + this.tipo)
+                //console.log('POTENCIA -> Valor: ' + (valor1.valor ** valor2.valor) + ' Tipo: ' + this.tipo)
                 return {valor: parseFloat(valor1.valor) ** parseFloat(valor2.valor),
                         tipo: this.tipo}
             }
         }
         return {valor: 'NULL', tipo: Tipo.NULL}
+    }
+
+    private modulo(entorno: Entorno): TipoRetorno {
+        const valor1 = this.exp1.ejecutar(entorno)
+        const valor2 = this.exp2.ejecutar(entorno)
+        this.tipo = modulo[valor1.tipo][valor2.tipo]
+        if(this.tipo === Tipo.DECIMAL){
+            //console.log()
+            return {valor: Number(valor1.valor) % Number(valor2.valor), tipo: this.tipo}
+        }
+        return {valor:'Null', tipo: Tipo.NULL}
     }
 }

@@ -1,4 +1,4 @@
 entero a con valor 1;
-imprimir a;
-a=2;
-imprimir a;
+booleano b con valor Verdadero;
+imprimir "El valor de la variable a es " + a;
+imprimir "El valor de la variable b es " + b;

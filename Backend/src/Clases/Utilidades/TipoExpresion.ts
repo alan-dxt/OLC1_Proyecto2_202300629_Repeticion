@@ -8,5 +8,6 @@ export enum TipoExpresion {
     RETORNO,
     INCREMENTO,
     DECREMENTO,
-    CASTEO
+    CASTEO,
+    UNARIO
 }

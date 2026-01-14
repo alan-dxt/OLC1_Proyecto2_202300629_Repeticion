@@ -28,7 +28,7 @@ CHAR        \'([^\\']|\\.)\'
 "caracter"          {return 'TK_caracter'}
 "booleano"          {return 'TK_booleano'}
 "Verdadero"         {return 'TK_verdadero'}
-"False"             {return 'TK_falso'}
+"Falso"             {return 'TK_falso'}
 
 "con"               {return 'TK_con'}
 "valor"             {return 'TK_valor'}
@@ -88,6 +88,9 @@ CHAR        \'([^\\']|\\.)\'
     const { Primitivo } = require('../Clases/Expresiones/Primitivo');
     const { Aritmetico } = require('../Clases/Expresiones/Aritmetico');
     const { AccesoID} = require('../Clases/Expresiones/AccesoID');
+    const { Relacional } = require('../Clases/Expresiones/Relacional');
+    const { Logico } = require('../Clases/Expresiones/Relacional');
+    const { Unario } = require('../Clases/Expresiones/Unario')
 
     //Instrucciones
     const { Imprimir } = require('../Clases/Instrucciones/Imprimir');
@@ -96,14 +99,13 @@ CHAR        \'([^\\']|\\.)\'
 %}
 
 //Precedencia de operadores
-%left 'TK_or'
+%left 'TKx`_or'
 %left 'TK_and'
 %left 'TK_igualdad', 'TK_distinto'
 %left 'TK_mayorIgual', 'TK_menorIgual', 'TK_menor', 'TK_mayor'
-%left 'TK_mas', 'TK_potencia'
 %left 'TK_mas', 'TK_menos'
 %left 'TK_multiplicacion', 'TK_division', 'TK_modulo'
-%left 'TK_parAbre', 'TK_parCierra'
+//%left 'TK_parAbre', 'TK_parCierra'
 
 %right 'TK_not'
 %right 'TK_potencia'
@@ -146,29 +148,56 @@ INSTRUCCION:
         TK_id TK_asignacion EXPRESION TK_puntoComa      {$$ = new Reasignacion(@1.first_line, @1.first_column, $1, $3)};
     
     EXPRESION:
-        ARITMETICA      {$$ = $1}   |
-        PRIMITIVO       {$$ = $1}   |
-        TK_id           {$$ = new AccesoID(@1.first_line, @1.first_column, $1)};
+        LOGICO  {$$ = $1};
 
+        LOGICO:
+            RELACIONAL      {$$ = $1}   |
+            LOGICO TK_or RELACIONAL     {$$ = new Logico(@1.first_line, @1.first_column, $1, $2, $3)}   |
+            LOGICO TK_and RELACIONAL    {$$ = new Logico(@1.first_line, @1.first_column, $1, $2, $3)};
 
+            RELACIONAL:
+                ARITMETICA                          {$$ = $1}   |
+                RELACIONAL TK_igualdad ARITMETICA   {$$ = new Relacional(@1.first_line, @1.first_column, $1, $2, $3)}   |
+                RELACIONAL TK_distinto ARITMETICA   {$$ = new Relacional(@1.first_line, @1.first_column, $1, $2, $3)}   |
+                RELACIONAL TK_menor ARITMETICA      {$$ = new Relacional(@1.first_line, @1.first_column, $1, $2, $3)}   |
+                RELACIONAL TK_menorIgual ARITMETICA {$$ = new Relacional(@1.first_line, @1.first_column, $1, $2, $3)}   |
+                RELACIONAL TK_mayor ARITMETICA      {$$ = new Relacional(@1.first_line, @1.first_column, $1, $2, $3)}   |
+                RELACIONAL TK_mayorIgual ARITMETICA {$$ = new Relacional(@1.first_line, @1.first_column, $1, $2, $3)};
 
+                ARITMETICA:
+                    TERMINO     {$$ = $1}   |
+                    ARITMETICA TK_mas TERMINO       {$$ = new Aritmetico(@1.first_line, @1.first_column, $1, $2, $3)}   |
+                    ARITMETICA TK_menos TERMINO     {$$ = new Aritmetico(@1.first_line, @1.first_column, $1, $2, $3)};
 
-    ARITMETICA:
-        PRIMITIVO SIMBOLO_BASICO PRIMITIVO    {$$ = new Aritmetico(@1.first_line, @1.first_column, $1, $2, $3)};
+                    TERMINO:
+                        POTENCIA    {$$ = $1}       |
+                        TERMINO TK_multiplicacion POTENCIA      {$$ = new Aritmetico(@1.first_line, @1.first_column, $1, $2, $3)}   |
+                        TERMINO TK_division POTENCIA            {$$ = new Aritmetico(@1.first_line, @1.first_column, $1, $2, $3)}   |
+                        TERMINO TK_modulo POTENCIA              {$$ = new Aritmetico(@1.first_line, @1.first_column, $1, $2, $3)};
+
+                        POTENCIA:
+                            UNARIO      {$$ = $1}   |
+                            UNARIO TK_potencia POTENCIA     {$$ = new Aritmetico(@1.first_line, @1.first_column, $1, $2, $3)};
+
+                            UNARIO:
+                                TK_not UNARIO       {$$ = new Unario(@1.first_line, @1.first_column, $1, $2)}       |
+                                TK_menos UNARIO     {$$ = new Unario(@1.first_line, @1.first_column, $1, $2)}       |
+                                FACTOR              {$$ = $1};
+
+                                FACTOR:
+                                    PRIMITIVO       {$$ = $1}       |
+                                    TK_id           {$$ = new AccesoID(@1.first_line, @1.first_column, $1)}     |
+                                    TK_parAbre EXPRESION TK_parCierra       {$$ = $2};
+
 
     PRIMITIVO:
         TK_int          {$$ = new Primitivo(@1.first_line, @1.first_column, $1, Tipo.ENTERO)}       |
         TK_double       {$$ = new Primitivo(@1.first_line, @1.first_column, $1, Tipo.DECIMAL)}      |
         TK_string       {$$ = new Primitivo(@1.first_line, @1.first_column, $1, Tipo.CADENA)}       |
-        TK_char         {$$ = new Primitivo(@1.first_line, @1.first_column, $1, Tipo.CARACTER)};
+        TK_char         {$$ = new Primitivo(@1.first_line, @1.first_column, $1, Tipo.CARACTER)}     |
+        TK_verdadero    {$$ = new Primitivo(@1.first_line, @1.first_column, true, Tipo.BOOLEANO)}     |
+        TK_falso        {$$ = new Primitivo(@1.first_line, @1.first_column, false, Tipo.BOOLEANO)};
 
-    SIMBOLO_BASICO:
-        TK_mas              {$$ = $1}   |
-        TK_menos            {$$ = $1}   |
-        TK_division         {$$ = $1}   |
-        TK_multiplicacion   {$$ = $1}   |
-        TK_modulo           {$$ = $1}   |
-        TK_potencia         {$$ = $1};
 
     TIPO_DATO:
         TK_entero       {$$ = Tipo.ENTERO}      |

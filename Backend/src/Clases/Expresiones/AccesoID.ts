@@ -17,7 +17,7 @@ export class AccesoID extends Expresion{
     public ejecutar(entorno: Entorno){
         const valor: Simbolo | null  = entorno.getVariable(this.id)
         if(valor){
-            console.log('Accediendo al ID con valor ' + valor.id + ' y tipo ' + Tipo[valor.tipo])
+            //console.log('Accediendo al ID con valor ' + valor.id + ' y tipo ' + Tipo[valor.tipo])
             return {valor: valor.valor , tipo: valor.tipo}
         }
         return {valor: 'NULL', tipo: Tipo.NULL}

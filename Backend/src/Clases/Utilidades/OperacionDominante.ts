@@ -32,3 +32,8 @@ export const potencia: Tipo[][] = [
     [Tipo.ENTERO,  Tipo.DECIMAL ],
     [Tipo.DECIMAL, Tipo.DECIMAL],
 ]
+
+export const modulo: Tipo[][] = [
+    [Tipo.DECIMAL,  Tipo.DECIMAL ],
+    [Tipo.DECIMAL, Tipo.DECIMAL],
+]
