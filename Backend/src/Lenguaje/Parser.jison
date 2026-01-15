@@ -47,9 +47,12 @@ CHAR        \'([^\\']|\\.)\'
 {DOUBLE}            {return 'TK_double'}
 {INTEGER}           {return 'TK_int'}
 
+
+'++'                {return 'TK_incremento'}
 '+'                 {return 'TK_mas'}
-'%'                 {return 'TK_modulo'}
+'--'                {return 'TK_decremento'}
 '-'                 {return 'TK_menos'}
+'%'                 {return 'TK_modulo'}
 '*'                 {return 'TK_multiplicacion'}
 '/'                 {return 'TK_division'}
 '^'                 {return 'TK_potencia'}
@@ -90,12 +93,13 @@ CHAR        \'([^\\']|\\.)\'
     const { AccesoID} = require('../Clases/Expresiones/AccesoID');
     const { Relacional } = require('../Clases/Expresiones/Relacional');
     const { Logico } = require('../Clases/Expresiones/Relacional');
-    const { Unario } = require('../Clases/Expresiones/Unario')
+    const { Unario } = require('../Clases/Expresiones/Unario');
 
     //Instrucciones
     const { Imprimir } = require('../Clases/Instrucciones/Imprimir');
     const { DeclaracionID } = require('../Clases/Instrucciones/DeclaracionID');
     const { Reasignacion } = require('../Clases/Instrucciones/Reasignacion');
+    const { IncDec } = require('../Clases/Instrucciones/IncDec');
 %}
 
 //Precedencia de operadores
@@ -145,6 +149,8 @@ INSTRUCCION:
             EXPRESION           {$$ = [$1]};
 
     REASIGNACION:
+        TK_id TK_incremento TK_puntoComa                {$$ = new IncDec(@1.first_line, @1.first_column, $1, $2)}           |
+        TK_id TK_decremento TK_puntoComa                {$$ = new IncDec(@1.first_line, @1.first_column, $1, $2)}           |
         TK_id TK_asignacion EXPRESION TK_puntoComa      {$$ = new Reasignacion(@1.first_line, @1.first_column, $1, $3)};
     
     EXPRESION:
