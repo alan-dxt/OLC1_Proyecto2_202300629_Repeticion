@@ -1,4 +1,2 @@
-entero a con valor 5;
-decimal b con valor 2;
-
-imprimir a<b? "a es menor que b": "b es menor que a";
+caracter a con valor (caracter) 2;
+imprimir a;

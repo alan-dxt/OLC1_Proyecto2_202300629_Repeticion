@@ -22,6 +22,9 @@ CHAR        \'([^\\']|\\.)\'
 
 \n                  {}
 {UNUSED}            {}
+// Comentarios
+\/\/[^\n]*          {}
+\/\*[^]*?\*\/       {}
 
 "entero"            {return 'TK_entero'}
 "decimal"           {return 'TK_decimal'}
@@ -98,6 +101,7 @@ CHAR        \'([^\\']|\\.)\'
     const { Logico } = require('../Clases/Expresiones/Relacional');
     const { Unario } = require('../Clases/Expresiones/Unario');
     const { OperadorTernario } = require('../Clases/Expresiones/OperadorTernario')
+    const { Casteo } = require('../Clases/Expresiones/Casteo')
 
     //Instrucciones
     const { Imprimir } = require('../Clases/Instrucciones/Imprimir');
@@ -153,7 +157,9 @@ IMPRIMIR
     ;
 
 DECLARACION_VARIABLE
-    : TIPO_DATO LISTA_IDS TK_con TK_valor LISTA_VALORES TK_puntoComa
+    :TIPO_DATO LISTA_IDS TK_asignacion LISTA_VALORES TK_puntoComa
+        { $$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, $4); } 
+    | TIPO_DATO LISTA_IDS TK_con TK_valor LISTA_VALORES TK_puntoComa
         { $$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, $5); }
     | TIPO_DATO LISTA_IDS TK_puntoComa
         { $$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, null); }
@@ -252,6 +258,8 @@ UNARIO
         { $$ = new Unario(@1.first_line, @1.first_column, $1, $2); }
     | TK_menos UNARIO
         { $$ = new Unario(@1.first_line, @1.first_column, $1, $2); }
+    | TK_parAbre TIPO_DATO TK_parCierra UNARIO
+        { $$ = new Casteo(@1.first_line, @1.first_column, $2, $4); }
     | FACTOR
         { $$ = $1; }
     ;
