@@ -34,6 +34,10 @@ export class DeclaracionID extends Instruccion{
             //console.log(`Variables del tipo ${this.tipo} -- ${this.listaIds.length}`)
             for(let i: number = 0; i < this.listaIds.length; i++){
                 let valor: TipoRetorno = this.listaValores[i].ejecutar(entorno)
+                if(this.tipo === Tipo.DECIMAL && valor.tipo === Tipo.ENTERO){
+                    valor.valor = parseFloat(valor.valor)
+                    valor.tipo = Tipo.DECIMAL
+                } 
                 if (valor.tipo !== this.tipo) {
                     //El resultado de la expresion y el tipo asignado no coinciden
                     errores.push(

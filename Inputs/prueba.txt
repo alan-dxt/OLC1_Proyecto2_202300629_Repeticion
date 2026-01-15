@@ -1,6 +1,4 @@
-entero a con valor 1;
-imprimir a;
-a++;
-imprimir a;
-a--;
-imprimir a;
+entero a con valor 5;
+decimal b con valor 2;
+
+imprimir a<b? "a es menor que b": "b es menor que a";

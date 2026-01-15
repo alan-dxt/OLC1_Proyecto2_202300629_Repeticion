@@ -7,5 +7,6 @@ export enum TipoExpresion {
     LLAMADA_FUNCION,
     RETORNO,
     CASTEO,
-    UNARIO
+    UNARIO,
+    OPERADOR_TERNARIO
 }
