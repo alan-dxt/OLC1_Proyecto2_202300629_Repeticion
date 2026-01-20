@@ -1,2 +1,3 @@
-caracter a con valor (caracter) 2;
-imprimir a;
+si(1+1==2){
+    imprimir "oso polar";
+}

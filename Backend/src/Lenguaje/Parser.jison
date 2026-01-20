@@ -37,8 +37,11 @@ CHAR        \'([^\\']|\\.)\'
 "con"               {return 'TK_con'}
 "valor"             {return 'TK_valor'}
 "imprimir"          {return 'TK_imprimir'}
-"si"                {return 'TK_if'}
-"o"                 {return 'TK_else'}
+"si"                {return 'TK_si'}
+"o"                 {return 'TK_o'}
+"de"                {return 'TK_de'}
+"lo"                {return 'TK_lo'}
+"contrario"         {return 'TK_contrario'}
 "para"              {return 'TK_para'}
 "funcion"           {return 'TK_funcion'}
 "procedimiento"     {return 'TK_procedimiento'}
@@ -98,7 +101,7 @@ CHAR        \'([^\\']|\\.)\'
     const { Aritmetico } = require('../Clases/Expresiones/Aritmetico');
     const { AccesoID} = require('../Clases/Expresiones/AccesoID');
     const { Relacional } = require('../Clases/Expresiones/Relacional');
-    const { Logico } = require('../Clases/Expresiones/Relacional');
+    const { Logico } = require('../Clases/Expresiones/Logico');
     const { Unario } = require('../Clases/Expresiones/Unario');
     const { OperadorTernario } = require('../Clases/Expresiones/OperadorTernario')
     const { Casteo } = require('../Clases/Expresiones/Casteo')
@@ -108,6 +111,7 @@ CHAR        \'([^\\']|\\.)\'
     const { DeclaracionID } = require('../Clases/Instrucciones/DeclaracionID');
     const { Reasignacion } = require('../Clases/Instrucciones/Reasignacion');
     const { IncDec } = require('../Clases/Instrucciones/IncDec');
+    const { Si } = require('../Clases/Instrucciones/Si')
 %}
 
 //Precedencia de operadores
@@ -149,6 +153,8 @@ INSTRUCCION
         { $$ = $1; }
     | REASIGNACION
         { $$ = $1; }
+    | SI
+        { $$ = $1; }
     ;
 
 IMPRIMIR
@@ -186,6 +192,34 @@ REASIGNACION
         { $$ = new IncDec(@1.first_line, @1.first_column, $1, $2); }
     | TK_id TK_asignacion EXPRESION TK_puntoComa
         { $$ = new Reasignacion(@1.first_line, @1.first_column, $1, $3); }
+    ;
+
+SI
+    : TK_si TK_parAbre EXPRESION TK_parCierra TK_llaveAbre INSTRUCCIONES TK_llaveCierra
+        { $$ = new Si(@1.first_line, @1.first_column, $3, $6, null, null); }
+    | TK_si TK_parAbre EXPRESION TK_parCierra TK_llaveAbre INSTRUCCIONES TK_llaveCierra DE_LO_CONTRARIO
+        { $$ = new Si(@1.first_line, @1.first_column, $3, $6, null, $8); }
+    | TK_si TK_parAbre EXPRESION TK_parCierra TK_llaveAbre INSTRUCCIONES TK_llaveCierra O_SI_LISTA
+        { $$ = new Si(@1.first_line, @1.first_column, $3, $6, $8, null); }
+    | TK_si TK_parAbre EXPRESION TK_parCierra TK_llaveAbre INSTRUCCIONES TK_llaveCierra O_SI_LISTA DE_LO_CONTRARIO
+        { $$ = new Si(@1.first_line, @1.first_column, $3, $6, $8, $9); }
+    ;
+
+O_SI_LISTA
+    : O_SI_LISTA O_SI
+        { $$.push($2); }
+    | O_SI
+        { $$ = [$1]; }
+    ;
+
+O_SI
+    : TK_o TK_si TK_parAbre EXPRESION TK_parCierra TK_llaveAbre INSTRUCCIONES TK_llaveCierra
+        { $$ = {condicion: $4, instrucciones: $7}; }
+    ;
+
+DE_LO_CONTRARIO
+    : TK_de TK_lo TK_contrario TK_llaveAbre INSTRUCCIONES TK_llaveCierra
+        { $$ = $5}
     ;
 
 EXPRESION
