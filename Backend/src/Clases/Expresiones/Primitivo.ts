@@ -28,15 +28,15 @@ export class Primitivo extends Expresion{
             case(Tipo.BOOLEANO):
                 //console.log("->Booleano Reconocido, valor: " + this.valor + "  tipo: " + this.tipo)
                 return {valor: this.valor, tipo: this.tipo}
-            case(Tipo.CADENA):
-                this.valor = this.valor.substring(1, this.valor.length - 1)
-                this.valor = this.valor.replace(/\\n/g, '\n')
-                this.valor = this.valor.replace(/\\t/g, '\t')
-                this.valor = this.valor.replace(/\\"/g, '\"')
-                this.valor = this.valor.replace(/\\'/g, '\'')
-                this.valor = this.valor.replace(/\\\\/g, '\\')
+            case Tipo.CADENA: 
+                let valor = this.valor.substring(1, this.valor.length - 1)
+                valor = valor.replace(/\\n/g, '\n')
+                valor = valor.replace(/\\t/g, '\t')
+                valor = valor.replace(/\\"/g, '\"')
+                valor = valor.replace(/\\'/g, '\'')
+                valor = valor.replace(/\\\\/g, '\\')
                 //console.log("->Cadena Reconocida, valor: " + this.valor + "  tipo: " + this.tipo)
-                return { valor: this.valor, tipo: this.tipo };
+                return { valor: valor, tipo: this.tipo }
             default:
                 throw new Error(`Primitivo ${this.valor} no soportado`)
         }

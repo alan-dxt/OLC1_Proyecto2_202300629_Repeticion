@@ -1,3 +1,9 @@
-si(1+1==2){
-    imprimir "oso polar";
+entero a;
+
+para(a = 0; a<10; a++){
+   
+   si(Verdadero){
+      imprimir a;
+   }
 }
+

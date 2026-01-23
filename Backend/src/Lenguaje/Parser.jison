@@ -47,6 +47,7 @@ CHAR        \'([^\\']|\\.)\'
 "procedimiento"     {return 'TK_procedimiento'}
 "retornar"          {return 'TK_retornar'}
 "ejecutar"          {return 'TK_ejecutar'}
+"continuar"         {return 'TK_continuar'}
 
 {ID}                {return 'TK_id'}
 {STRING}            {return 'TK_string'}
@@ -111,7 +112,8 @@ CHAR        \'([^\\']|\\.)\'
     const { DeclaracionID } = require('../Clases/Instrucciones/DeclaracionID');
     const { Reasignacion } = require('../Clases/Instrucciones/Reasignacion');
     const { IncDec } = require('../Clases/Instrucciones/IncDec');
-    const { Si } = require('../Clases/Instrucciones/Si')
+    const { Si } = require('../Clases/Instrucciones/Si');
+    const { Para } = require('../Clases/Instrucciones/Para');
 %}
 
 //Precedencia de operadores
@@ -149,11 +151,13 @@ INSTRUCCIONES
 INSTRUCCION
     : IMPRIMIR
         { $$ = $1; }
-    | DECLARACION_VARIABLE
+    | DECLARACION_VARIABLE TK_puntoComa
         { $$ = $1; }
-    | REASIGNACION
+    | REASIGNACION TK_puntoComa
         { $$ = $1; }
     | SI
+        { $$ = $1; }
+    |PARA
         { $$ = $1; }
     ;
 
@@ -163,11 +167,11 @@ IMPRIMIR
     ;
 
 DECLARACION_VARIABLE
-    :TIPO_DATO LISTA_IDS TK_asignacion LISTA_VALORES TK_puntoComa
+    :TIPO_DATO LISTA_IDS TK_asignacion LISTA_VALORES 
         { $$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, $4); } 
-    | TIPO_DATO LISTA_IDS TK_con TK_valor LISTA_VALORES TK_puntoComa
+    | TIPO_DATO LISTA_IDS TK_con TK_valor LISTA_VALORES 
         { $$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, $5); }
-    | TIPO_DATO LISTA_IDS TK_puntoComa
+    | TIPO_DATO LISTA_IDS
         { $$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, null); }
     ;
 
@@ -186,11 +190,11 @@ LISTA_VALORES
     ;
 
 REASIGNACION
-    : TK_id TK_incremento TK_puntoComa
+    : TK_id TK_incremento
         { $$ = new IncDec(@1.first_line, @1.first_column, $1, $2); }
-    | TK_id TK_decremento TK_puntoComa
+    | TK_id TK_decremento
         { $$ = new IncDec(@1.first_line, @1.first_column, $1, $2); }
-    | TK_id TK_asignacion EXPRESION TK_puntoComa
+    | TK_id TK_asignacion EXPRESION
         { $$ = new Reasignacion(@1.first_line, @1.first_column, $1, $3); }
     ;
 
@@ -221,6 +225,20 @@ DE_LO_CONTRARIO
     : TK_de TK_lo TK_contrario TK_llaveAbre INSTRUCCIONES TK_llaveCierra
         { $$ = $5}
     ;
+
+PARA
+    : TK_para TK_parAbre DECLARACION_PARA TK_puntoComa EXPRESION TK_puntoComa REASIGNACION TK_parCierra TK_llaveAbre INSTRUCCIONES TK_llaveCierra
+        { $$ = new Para(@1.first_line, @1.first_column, $3, $5, $7, $10); }
+    ;
+
+DECLARACION_PARA
+    : REASIGNACION
+        { $$ = $1 }
+    | DECLARACION_VARIABLE
+        { $$ = $1 }
+    ;
+
+
 
 EXPRESION
     : OPERADOR_TERNARIO

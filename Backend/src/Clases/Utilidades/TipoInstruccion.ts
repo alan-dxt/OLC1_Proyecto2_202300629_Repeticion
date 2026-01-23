@@ -10,5 +10,6 @@ export enum tipoInstruccion {
     CREAR_OBJETOS,
     PARAMETRO,
     PROCEDIMIENTO, 
-    IncDec
+    IncDec,
+    CONTINUAR
 }
