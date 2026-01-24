@@ -43,6 +43,7 @@ CHAR        \'([^\\']|\\.)\'
 "lo"                {return 'TK_lo'}
 "contrario"         {return 'TK_contrario'}
 "para"              {return 'TK_para'}
+"mientras"          {return 'TK_mientras'}
 "funcion"           {return 'TK_funcion'}
 "procedimiento"     {return 'TK_procedimiento'}
 "retornar"          {return 'TK_retornar'}
@@ -114,6 +115,7 @@ CHAR        \'([^\\']|\\.)\'
     const { IncDec } = require('../Clases/Instrucciones/IncDec');
     const { Si } = require('../Clases/Instrucciones/Si');
     const { Para } = require('../Clases/Instrucciones/Para');
+    const { Mientras } = require('../Clases/Instrucciones/Mientras')
 %}
 
 //Precedencia de operadores
@@ -157,7 +159,9 @@ INSTRUCCION
         { $$ = $1; }
     | SI
         { $$ = $1; }
-    |PARA
+    | PARA
+        { $$ = $1; }
+    | MIENTRAS
         { $$ = $1; }
     ;
 
@@ -236,6 +240,11 @@ DECLARACION_PARA
         { $$ = $1 }
     | DECLARACION_VARIABLE
         { $$ = $1 }
+    ;
+
+MIENTRAS
+    : TK_mientras TK_parAbre EXPRESION TK_parCierra TK_llaveAbre INSTRUCCIONES TK_llaveCierra
+        { $$ = new Mientras(@1.first_line, @1.first_column, $3, $6)}
     ;
 
 

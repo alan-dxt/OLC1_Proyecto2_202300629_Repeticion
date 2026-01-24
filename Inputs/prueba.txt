@@ -1,9 +1,10 @@
-entero a;
-
-para(a = 0; a<10; a++){
-   
-   si(Verdadero){
-      imprimir a;
+booleano a con valor Verdadero;
+entero b con valor 1;
+mientras(a){
+   imprimir b;
+   b++;
+   si(b>5){
+      imprimir "b ha alcanzado un valor de " + b;
+      a = Falso;
    }
 }
-

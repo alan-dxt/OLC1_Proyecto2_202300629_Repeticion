@@ -9,7 +9,7 @@ import { TipoError } from "../Utilidades/TipoError";
 import { Tipo } from "../Utilidades/Tipo";
 
 export class Para extends Instruccion{
-    
+    private bloquePara: Bloque
     constructor(
         linea: number,
         columna: number,
@@ -19,19 +19,29 @@ export class Para extends Instruccion{
         public instrucciones: Instruccion[]
     ){
         super(linea, columna, tipoInstruccion.PARA)
+        this.bloquePara = new Bloque(this.linea, this.columna, this.instrucciones)
     }
 
     public ejecutar(entorno: Entorno) {
-        //Creacion del bloque de instrucciones
-        const bloqueInstrucciones = new Bloque(this.linea, this.columna, this.instrucciones)
         //Entorno Local de ejecucion para el ciclo for
         const entornoPara = new Entorno(entorno, entorno.nombre + "_PARA");
         //Ejecucion de las de la declaracion
         this.inicio.ejecutar(entornoPara)
         //Ejecicion de la condicion para la verificacion
         let condicion = this.condicion.ejecutar(entornoPara)
+        if(condicion.valor !== Tipo.BOOLEANO){
+            errores.push(
+                new Error(
+                    this.linea,
+                    this.columna,
+                    TipoError.SINTACTICO,
+                    `Se esperaba una condicion de tipo BOOLEANO pero se obtuvo ${Tipo[condicion.tipo]}`
+                )
+            )
+            return
+        }
         while (condicion.valor === true) {
-            bloqueInstrucciones.ejecutar(entornoPara)
+            this.bloquePara.ejecutar(entornoPara)
             this.actualizacion.ejecutar(entornoPara)
             condicion = this.condicion.ejecutar(entornoPara)
         }
