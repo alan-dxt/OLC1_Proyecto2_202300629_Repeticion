@@ -51,6 +51,9 @@ CHAR        \'([^\\']|\\.)\'
 "continuar"         {return 'TK_continuar'}
 "tolower"           {return 'TK_toLower'}
 "toupper"           {return 'TK_toUpper'}
+"hacer"             {return 'TK_hacer'}
+"hasta"             {return 'TK_hasta'}
+"que"               {return 'TK_que'}
 
 {ID}                {return 'TK_id'}
 {STRING}            {return 'TK_string'}
@@ -119,11 +122,12 @@ CHAR        \'([^\\']|\\.)\'
     const { IncDec } = require('../Clases/Instrucciones/IncDec');
     const { Si } = require('../Clases/Instrucciones/Si');
     const { Para } = require('../Clases/Instrucciones/Para');
-    const { Mientras } = require('../Clases/Instrucciones/Mientras')
+    const { Mientras } = require('../Clases/Instrucciones/Mientras');
+    const { Hacer } = require('../Clases/Instrucciones/Hacer');
 %}
 
 //Precedencia de operadores
-%left 'TKx`_or'
+%left 'TK_or'
 %left 'TK_and'
 %left 'TK_igualdad', 'TK_distinto'
 %left 'TK_mayorIgual', 'TK_menorIgual', 'TK_menor', 'TK_mayor'
@@ -166,6 +170,8 @@ INSTRUCCION
     | PARA
         { $$ = $1; }
     | MIENTRAS
+        { $$ = $1; }
+    | HACER
         { $$ = $1; }
     ;
 
@@ -248,8 +254,15 @@ DECLARACION_PARA
 
 MIENTRAS
     : TK_mientras TK_parAbre EXPRESION TK_parCierra TK_llaveAbre INSTRUCCIONES TK_llaveCierra
-        { $$ = new Mientras(@1.first_line, @1.first_column, $3, $6)}
+        { $$ = new Mientras(@1.first_line, @1.first_column, $3, $6); }
     ;
+
+HACER
+    : TK_hacer TK_llaveAbre INSTRUCCIONES TK_llaveCierra TK_hasta TK_que TK_parAbre EXPRESION TK_parCierra
+        { $$ = new Hacer(@1.first_line, @1.first_column, $3, $8); }
+    ;
+
+
 
 
 

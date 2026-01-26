@@ -8,40 +8,42 @@ import { Error } from "../Utilidades/Error";
 import { TipoError } from "../Utilidades/TipoError";
 import { Tipo } from "../Utilidades/Tipo";
 
-export class Mientras extends Instruccion{
-    private bloqueMientras: Bloque //Bloque local de instrucciones
+export class Hacer extends Instruccion{
+    private bloqueHacer: Bloque
     constructor(
         linea: number,
         columna: number,
-        private condicion: Expresion,
-        private instrucciones: Instruccion[]
+        private instrucciones: Instruccion[],
+        private condicion: Expresion
     ){
-        super(linea, columna, tipoInstruccion.MIENTRAS)
-        //Inicializacion del bloque de instrucciones
-        this.bloqueMientras = new Bloque(this.linea, this.columna, this.instrucciones)
+        super(linea, columna, tipoInstruccion.HACER)
+        //Inicializacion del bloque local
+        this.bloqueHacer = new Bloque(linea, columna, instrucciones)
     }
 
-    public ejecutar(entorno: Entorno){
+    public ejecutar(entorno: Entorno) {
         //Creacion del entorno local de ejecucion
-        const entornoMientras = new Entorno(entorno, entorno.nombre + "_MIENTRAS")
-        //ejecucion de la condicion
-        let condicion = this.condicion.ejecutar(entornoMientras)
-        //verificacion del tipo de la condicion
+        const entornoHacer = new Entorno(entorno, entorno.nombre + "_HACER")
+        //Primera ejecucion del bloque
+        this.bloqueHacer.ejecutar(entornoHacer)
+        //Validacion de la condicion
+        let condicion  = this.condicion.ejecutar(entornoHacer)
+        //verificacion de la condicion
         if(condicion.tipo !== Tipo.BOOLEANO){
             errores.push(
                 new Error(
                     this.linea,
                     this.columna,
-                    TipoError.SINTACTICO,
+                    TipoError.SEMANTICO,
                     `Se espera una condicion del tipo BOOLEANO pero se obtuvo ${Tipo[condicion.tipo]}`
                 )
             )
             return
         }
-        while(condicion.valor === true){
-            this.bloqueMientras.ejecutar(entornoMientras)
-            //Reevaluacion de la condicion
-            condicion = this.condicion.ejecutar(entornoMientras)
+        //Ciclo
+        while(condicion.valor === false){
+            this.bloqueHacer.ejecutar(entornoHacer)
+            condicion = this.condicion.ejecutar(entornoHacer)
         }
 
     }

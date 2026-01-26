@@ -50,6 +50,9 @@ export class Relacional extends Expresion{
         if(valor1.tipo === Tipo.CADENA && valor2.tipo === Tipo.CADENA){
             return {valor: valor1.valor === valor2.valor, tipo: this.tipo}
         }
+        if(valor1.tipo ===Tipo.BOOLEANO && valor2.tipo === Tipo.BOOLEANO){
+            return {valor: valor1.valor === valor2.valor, tipo: Tipo.BOOLEANO}
+        }
         return {valor: 'NULL', tipo: Tipo.NULL}
     }
 

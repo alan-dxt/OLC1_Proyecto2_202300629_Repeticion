@@ -1,2 +1,10 @@
-cadena a con valor tolower("OSO ") + 1;
-imprimir a;
+entero a con valor 0;
+booleano b con valor Verdadero;
+hacer{
+    imprimir a;
+    si(a>=10){
+        imprimir "se ha alcanzado la condicion " + a;
+        b = Falso;
+    }
+    a++;
+} hasta que(b==Falso)
