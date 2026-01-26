@@ -8,5 +8,7 @@ export enum TipoExpresion {
     RETORNO,
     CASTEO,
     UNARIO,
-    OPERADOR_TERNARIO
+    OPERADOR_TERNARIO,
+    TO_LOWER,
+    TO_UPPER
 }

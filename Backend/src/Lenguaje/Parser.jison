@@ -49,6 +49,8 @@ CHAR        \'([^\\']|\\.)\'
 "retornar"          {return 'TK_retornar'}
 "ejecutar"          {return 'TK_ejecutar'}
 "continuar"         {return 'TK_continuar'}
+"tolower"           {return 'TK_toLower'}
+"toupper"           {return 'TK_toUpper'}
 
 {ID}                {return 'TK_id'}
 {STRING}            {return 'TK_string'}
@@ -105,8 +107,10 @@ CHAR        \'([^\\']|\\.)\'
     const { Relacional } = require('../Clases/Expresiones/Relacional');
     const { Logico } = require('../Clases/Expresiones/Logico');
     const { Unario } = require('../Clases/Expresiones/Unario');
-    const { OperadorTernario } = require('../Clases/Expresiones/OperadorTernario')
-    const { Casteo } = require('../Clases/Expresiones/Casteo')
+    const { OperadorTernario } = require('../Clases/Expresiones/OperadorTernario');
+    const { Casteo } = require('../Clases/Expresiones/Casteo');
+    const { ToLower } = require('../Clases/Expresiones/ToLower');
+    const { ToUpper } = require('../Clases/Expresiones/ToUpper');
 
     //Instrucciones
     const { Imprimir } = require('../Clases/Instrucciones/Imprimir');
@@ -332,6 +336,10 @@ FACTOR
         { $$ = new AccesoID(@1.first_line, @1.first_column, $1); }
     | TK_parAbre EXPRESION TK_parCierra
         { $$ = $2; }
+    | TK_toLower TK_parAbre EXPRESION TK_parCierra
+        { $$ = new ToLower(@1.first_line, @1.first_column, $3); }
+    | TK_toUpper TK_parAbre EXPRESION TK_parCierra
+        { $$ = new ToUpper(@1.first_line, @1.first_column, $3); }
     ;
 
 
