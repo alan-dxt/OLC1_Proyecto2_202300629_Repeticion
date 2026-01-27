@@ -7,6 +7,7 @@ import { errores } from "../Utilidades/Salida";
 import { Error } from "../Utilidades/Error";
 import { TipoError } from "../Utilidades/TipoError";
 import { Tipo } from "../Utilidades/Tipo";
+import { Continue } from "./Continuar";
 
 export class Hacer extends Instruccion{
     private bloqueHacer: Bloque
@@ -42,9 +43,18 @@ export class Hacer extends Instruccion{
         }
         //Ciclo
         while(condicion.valor === false){
-            this.bloqueHacer.ejecutar(entornoHacer)
-            condicion = this.condicion.ejecutar(entornoHacer)
+            try {
+                //Ejecucion de las instrucciones en el entorno local
+                this.bloqueHacer.ejecutar(entornoHacer)
+                //Reevaluacion de la condicion
+                condicion = this.condicion.ejecutar(entornoHacer)
+            } catch (e) {
+                if(e instanceof Continue){
+                    condicion = this.condicion.ejecutar(entornoHacer)
+                    continue;
+                }
+                throw e;
+            }
         }
-
     }
 }

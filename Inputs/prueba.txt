@@ -1,10 +1,9 @@
-entero a con valor 0;
-booleano b con valor Verdadero;
-hacer{
-    imprimir a;
-    si(a>=10){
-        imprimir "se ha alcanzado la condicion " + a;
-        b = Falso;
+entero a;
+para(a = 0; a<10; a++){
+    
+    si(a==5){
+        imprimir "se ha alcanzado un continue ";
+        continuar;
     }
-    a++;
-} hasta que(b==Falso)
+    imprimir a;
+}

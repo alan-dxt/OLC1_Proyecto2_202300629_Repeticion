@@ -7,6 +7,7 @@ import { errores } from "../Utilidades/Salida";
 import { Error } from "../Utilidades/Error";
 import { TipoError } from "../Utilidades/TipoError";
 import { Tipo } from "../Utilidades/Tipo";
+import { Continue } from "./Continuar";
 
 export class Para extends Instruccion{
     private bloquePara: Bloque
@@ -29,7 +30,7 @@ export class Para extends Instruccion{
         this.inicio.ejecutar(entornoPara)
         //Ejecicion de la condicion para la verificacion
         let condicion = this.condicion.ejecutar(entornoPara)
-        if(condicion.valor !== Tipo.BOOLEANO){
+        if(condicion.tipo !== Tipo.BOOLEANO){
             errores.push(
                 new Error(
                     this.linea,
@@ -41,9 +42,18 @@ export class Para extends Instruccion{
             return
         }
         while (condicion.valor === true) {
-            this.bloquePara.ejecutar(entornoPara)
-            this.actualizacion.ejecutar(entornoPara)
-            condicion = this.condicion.ejecutar(entornoPara)
+            try {
+                this.bloquePara.ejecutar(entornoPara)
+                this.actualizacion.ejecutar(entornoPara)
+                condicion = this.condicion.ejecutar(entornoPara)
+            } catch (e) {
+                if(e instanceof Continue){
+                    this.actualizacion.ejecutar(entornoPara)
+                    condicion = this.condicion.ejecutar(entornoPara)
+                    continue
+                }
+                throw e;
+            }
         }
     }
 }

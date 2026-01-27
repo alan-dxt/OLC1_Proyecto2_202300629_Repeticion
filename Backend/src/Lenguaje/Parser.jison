@@ -124,6 +124,7 @@ CHAR        \'([^\\']|\\.)\'
     const { Para } = require('../Clases/Instrucciones/Para');
     const { Mientras } = require('../Clases/Instrucciones/Mientras');
     const { Hacer } = require('../Clases/Instrucciones/Hacer');
+    const { Continuar } = require('../Clases/Instrucciones/Continuar');
 %}
 
 //Precedencia de operadores
@@ -172,6 +173,8 @@ INSTRUCCION
     | MIENTRAS
         { $$ = $1; }
     | HACER
+        { $$ = $1; }
+    | CONTINUAR
         { $$ = $1; }
     ;
 
@@ -260,6 +263,11 @@ MIENTRAS
 HACER
     : TK_hacer TK_llaveAbre INSTRUCCIONES TK_llaveCierra TK_hasta TK_que TK_parAbre EXPRESION TK_parCierra
         { $$ = new Hacer(@1.first_line, @1.first_column, $3, $8); }
+    ;
+
+CONTINUAR
+    : TK_continuar TK_puntoComa
+        { $$ = new Continuar(@1.first_line, @1.first_column)}
     ;
 
 

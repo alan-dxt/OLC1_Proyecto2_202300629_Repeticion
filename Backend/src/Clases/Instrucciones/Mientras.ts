@@ -7,6 +7,7 @@ import { errores } from "../Utilidades/Salida";
 import { Error } from "../Utilidades/Error";
 import { TipoError } from "../Utilidades/TipoError";
 import { Tipo } from "../Utilidades/Tipo";
+import { Continue } from "./Continuar";
 
 export class Mientras extends Instruccion{
     private bloqueMientras: Bloque //Bloque local de instrucciones
@@ -38,11 +39,20 @@ export class Mientras extends Instruccion{
             )
             return
         }
-        while(condicion.valor === true){
-            this.bloqueMientras.ejecutar(entornoMientras)
-            //Reevaluacion de la condicion
-            condicion = this.condicion.ejecutar(entornoMientras)
-        }
 
+        while (condicion.valor === true) {
+            try {
+                //Ejecucion de las instrucciones en el entorno local
+                this.bloqueMientras.ejecutar(entornoMientras)
+                //Reevaluacion de la condicion
+                condicion = this.condicion.ejecutar(entornoMientras)
+            } catch (e) {
+                if (e instanceof Continue) {
+                    condicion = this.condicion.ejecutar(entornoMientras);
+                    continue
+                }
+                throw e;
+            }
+        }
     }
 }
