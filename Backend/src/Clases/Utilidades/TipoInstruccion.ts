@@ -13,4 +13,5 @@ export enum tipoInstruccion {
     IncDec,
     CONTINUAR,
     HACER,
+    DETENER
 }

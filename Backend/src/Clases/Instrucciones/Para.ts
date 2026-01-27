@@ -8,6 +8,7 @@ import { Error } from "../Utilidades/Error";
 import { TipoError } from "../Utilidades/TipoError";
 import { Tipo } from "../Utilidades/Tipo";
 import { Continue } from "./Continuar";
+import { Return } from "./Detener";
 
 export class Para extends Instruccion{
     private bloquePara: Bloque
@@ -51,6 +52,9 @@ export class Para extends Instruccion{
                     this.actualizacion.ejecutar(entornoPara)
                     condicion = this.condicion.ejecutar(entornoPara)
                     continue
+                }
+                if(e instanceof Return){
+                    condicion.valor === false
                 }
                 throw e;
             }

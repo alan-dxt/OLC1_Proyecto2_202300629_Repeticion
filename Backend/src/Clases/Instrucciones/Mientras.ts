@@ -8,6 +8,7 @@ import { Error } from "../Utilidades/Error";
 import { TipoError } from "../Utilidades/TipoError";
 import { Tipo } from "../Utilidades/Tipo";
 import { Continue } from "./Continuar";
+import { Return } from "./Detener";
 
 export class Mientras extends Instruccion{
     private bloqueMientras: Bloque //Bloque local de instrucciones
@@ -50,6 +51,9 @@ export class Mientras extends Instruccion{
                 if (e instanceof Continue) {
                     condicion = this.condicion.ejecutar(entornoMientras);
                     continue
+                }
+                if(e instanceof Return){
+                    condicion.valor = false
                 }
                 throw e;
             }

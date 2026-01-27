@@ -1,9 +1,4 @@
-entero a;
+entero a con valor 0;
 para(a = 0; a<10; a++){
-    
-    si(a==5){
-        imprimir "se ha alcanzado un continue ";
-        continuar;
-    }
     imprimir a;
 }

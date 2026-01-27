@@ -8,6 +8,7 @@ import { Error } from "../Utilidades/Error";
 import { TipoError } from "../Utilidades/TipoError";
 import { Tipo } from "../Utilidades/Tipo";
 import { Continue } from "./Continuar";
+import { Return } from "./Detener";
 
 export class Hacer extends Instruccion{
     private bloqueHacer: Bloque
@@ -25,11 +26,18 @@ export class Hacer extends Instruccion{
     public ejecutar(entorno: Entorno) {
         //Creacion del entorno local de ejecucion
         const entornoHacer = new Entorno(entorno, entorno.nombre + "_HACER")
-        //Primera ejecucion del bloque
-        this.bloqueHacer.ejecutar(entornoHacer)
+        try {
+            //Primera ejecucion del bloque
+            this.bloqueHacer.ejecutar(entornoHacer)
+        } catch (e) {
+            if(e instanceof Return){
+                return
+            }
+            throw e
+        }
         //Validacion de la condicion
         let condicion  = this.condicion.ejecutar(entornoHacer)
-        //verificacion de la condicion
+         //verificacion de la condicion
         if(condicion.tipo !== Tipo.BOOLEANO){
             errores.push(
                 new Error(
@@ -52,6 +60,9 @@ export class Hacer extends Instruccion{
                 if(e instanceof Continue){
                     condicion = this.condicion.ejecutar(entornoHacer)
                     continue;
+                }
+                if(e instanceof Return){
+                    condicion.valor = false
                 }
                 throw e;
             }

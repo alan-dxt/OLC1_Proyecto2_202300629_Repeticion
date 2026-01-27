@@ -3,7 +3,7 @@ import { tipoInstruccion } from "../Utilidades/TipoInstruccion";
 import { Entorno } from "../Entorno/Entorno";
 
 export class Continue {
-    public readonly tipo = "CONTINUE";
+    public readonly tipo = "CONTINUE"
 }
 
 export class Continuar extends Instruccion {
