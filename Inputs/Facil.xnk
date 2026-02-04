@@ -1,0 +1,130 @@
+decimal nota;
+entero a con valor 10;
+decimal d;
+caracter x con valor 'y';
+cadena o1;
+
+/*
+No truena con comentarios
+multilinea
+*/
+//ni de una linea
+
+//asignacion 
+nota = 1.5;
+
+//declaracion con valor
+si (a == 10) {
+    nota = nota + 0.25;
+}
+
+//default
+si (d > -1) {
+    nota = nota + 0.25;
+}
+
+// reasignacion
+nota = nota + 0.5;
+
+// secuencias de escape e imprimir
+imprimir d + "\n abajo del decimal -"
+imprimir nl "tabulado del caracter\t" + x
+/*revisar que la salida sea:
+0.0
+abajo del decimal - tabulado del caracter    y*/
+nota = nota + 1 + 2;
+
+// Aritmeticas
+d = 3.14;
+
+// negacion
+si (-d >= -3.14) {
+    nota = nota + 0.5;
+}
+
+// modulo
+si ((6.4 % 3) == 0.4) {
+    nota = nota + 0.5;
+}
+
+// potencia
+si ((5 ^ 3) == 125.0) {
+    nota = nota + 0.5;
+}
+
+// division
+si ((x / 11) == 11) {
+    nota = nota + 0.5;
+}
+
+// multiplicacion
+si (('0'  * 0.25) == 12) {
+    nota = nota + 0.5;
+}
+
+// resta
+si ((x - 1) == 'x') {
+    nota = nota + 0.5;
+}
+
+si ((1 - verdadero) == 0) {
+    nota = nota + 0.5;
+}
+
+// suma cadena y caracter, cadena y boolean, entero y boolean
+si ("hola compi1" == ("hola compi" + "1")) {
+    nota = nota + 0.5;
+}
+
+si ("eso tilin" != ("eso tilin" + falso)) {
+    nota = nota + 0.5;
+}
+
+si (8 + falso) == 8 {
+    nota = nota + 0.5;
+}
+
+// operadores logicos
+si ('9' == "0" || verdadero) {
+    nota = nota + 1;
+}
+
+booleano f con valor falso;
+
+si (f == falso && verdadero) {
+    nota = nota + 1;
+}
+
+f = !!!!f;
+
+si (!f) {
+    nota = nota + 0.5;
+}
+
+// operadores relacionales
+si (f == falso) {
+    nota = nota + 0.5;
+}
+
+si ("comparando" != "cadenas") {
+    nota = nota + 0.5;
+}
+
+si (159.99 <= 166) { // entero decimal
+    nota = nota + 0.5;
+}
+
+si ('2' >= 50) { // caracter entero
+    nota = nota + 0.5;
+}
+
+si (0.6800 < 0.68001) { // decimal decimal
+    nota = nota + 0.5 + 1;
+}
+
+si ('ö' > 'æ') {
+    nota = nota + 0.5 + 1;
+}
+
+imprimir "Nota - Archivo fácil: ";
+imprimir nota;

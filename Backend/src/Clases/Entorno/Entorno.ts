@@ -7,6 +7,7 @@ import { Funcion } from "../Instrucciones/Funcion";
 import { Procedimiento } from "../Instrucciones/Procedimiento";
 import { Error } from "../Utilidades/Error";
 import { TipoError } from "../Utilidades/TipoError";
+import { VectorValor } from "../Auxiliares/VectorValor";
 
 //Espacio de almacenamiento de lo que se ejecuta
 //Entorno <--> Bloque
@@ -16,6 +17,7 @@ export class Entorno {
     public objetos: Map<string, any> = new Map<string, any>()                               //Objetos 
     public funciones: Map<string, Funcion> = new Map<string, Funcion>()                     //Funciones
     public procedimientos: Map<string, Procedimiento> = new Map<string, Procedimiento>()    //Procedimientos
+    public vectores: Map<string, VectorValor> = new Map<string, VectorValor>()
 
     constructor(
         private anterior: Entorno | null,
@@ -95,7 +97,7 @@ export class Entorno {
     }
 
     public guardarFuncion(id: string, funcion: Funcion){
-        if(this.funciones.has(id)){
+        if(this.procedimientos.has(id) || this.funciones.has(id) || this.ids.has(id) || this.vectores.has(id)){
             //La funcion ya existe
             errores.push(new Error(
                             funcion.linea,
@@ -120,14 +122,15 @@ export class Entorno {
     }
 
     public guardarProcedimiento(id: string, procedimiento: Procedimiento){
-        if(this.procedimientos.has(id) || this.funciones.has(id) || this.ids.has(id)){
+        if(this.procedimientos.has(id) || this.funciones.has(id) || this.ids.has(id) || this.vectores.has(id)){
             //La id del procedimiento ya se encuentra ocupada
-            errores.push(new Error(
-                            procedimiento.linea,
-                            procedimiento.columna,
-                            TipoError.SEMANTICO,
-                            `La id '${id}' del procedimiento ya se encuentra en uso`
-                        ))
+            errores.push(
+                new Error(
+                    procedimiento.linea,
+                    procedimiento.columna,
+                    TipoError.SEMANTICO,
+                    `La id '${id}' del procedimiento ya se encuentra en uso`
+                ))
             return
         }
         //El procedimineto no existe todavia
@@ -142,6 +145,20 @@ export class Entorno {
                                         id,
                                         this.nombre
                                     ))
+    }
+    public guardarVector(id:string, vector: VectorValor){
+        if(this.procedimientos.has(id) || this.funciones.has(id) || this.ids.has(id) || this.vectores.has(id)){
+            errores.push(
+                new Error(
+                    vector.linea,
+                    vector.columna,
+                    TipoError.SEMANTICO,
+                    `La id ${id} del vector ya se encuentra en uso`
+                )
+            )
+            return
+        }
+        this.vectores.set(id, vector)
     }
 
     public getFuncion(id: string): Funcion | null {

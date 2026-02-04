@@ -55,6 +55,7 @@ CHAR        \'([^\\']|\\.)\'
 "hasta"             {return 'TK_hasta'}
 "que"               {return 'TK_que'}
 "detener"           {return 'TK_detener'}
+"vector"            {return 'TK_vector'}
 
 {ID}                {return 'TK_id'}
 {STRING}            {return 'TK_string'}
@@ -89,6 +90,8 @@ CHAR        \'([^\\']|\\.)\'
 ':'                 {return 'TK_dosPuntos'}
 ','                 {return 'TK_coma'}
 '?'                 {return 'TK_interrogacion'}
+'['                 {return 'TK_corAbre'}
+']'                 {return 'TK_corCierra'}
 
 .                   {}
 <<EOF>>             {return 'EOF'}
@@ -127,6 +130,10 @@ CHAR        \'([^\\']|\\.)\'
     const { Hacer } = require('../Clases/Instrucciones/Hacer');
     const { Continuar } = require('../Clases/Instrucciones/Continuar');
     const { Detener } = require('../Clases/Instrucciones/Detener');
+    const { Vector } = require('../Clases/Instrucciones/Vector');
+
+    //Auxiliares
+    const { Celda } = require('../Clases/Auxiliares/Celda');
 %}
 
 //Precedencia de operadores
@@ -188,12 +195,40 @@ IMPRIMIR
     ;
 
 DECLARACION_VARIABLE
-    :TIPO_DATO LISTA_IDS TK_asignacion LISTA_VALORES 
+    : TIPO_DATO LISTA_IDS TK_asignacion LISTA_VALORES 
         { $$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, $4); } 
     | TIPO_DATO LISTA_IDS TK_con TK_valor LISTA_VALORES 
         { $$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, $5); }
     | TIPO_DATO LISTA_IDS
         { $$ = new DeclaracionID(@1.first_line, @1.first_column, $2, $1, null); }
+    | TIPO_DATO TK_corAbre TK_corCierra TK_id TK_asignacion TK_vector TIPO_DATO TK_corAbre LISTA_CELDAS2 TK_corCierra
+        { $$ = new Vector(@1.first_line, @1.first_column, $1, $4, $9, null, null); }
+    | TIPO_DATO TK_corAbre TK_corCierra TK_corAbre TK_corCierra TK_id TK_asignacion TK_vector TIPO_DATO TK_corAbre LISTA_CELDAS TK_corCierra
+        { $$ = new Vector(@1.first_line, @1.first_column, $1, $6, $11, null, null); }
+    ;
+
+LISTA_CELDAS2
+    : LISTA_CELDAS2 TK_coma CELDA2
+        { $$.push($3); }
+    | CELDA2
+        { $$ = [$1]; }
+    ;
+//[1, 2, 3]
+CELDA2
+    : EXPRESION
+        { $$ = new Celda([$1]); }
+    ;
+
+LISTA_CELDAS
+    : LISTA_CELDAS TK_coma CELDA
+        { $$.push($3); }
+    | CELDA
+        { $$ = [$1]; }
+    ;
+//[ [1 , 2] , [ 3 , 4 ] ]
+CELDA
+    : TK_corAbre LISTA_VALORES TK_corCierra
+        { $$ =  new Celda($2); }
     ;
 
 LISTA_IDS

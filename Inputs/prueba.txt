@@ -1,4 +1,1 @@
-entero a con valor 0;
-para(a = 0; a<10; a++){
-    imprimir a;
-}
+entero [][] vectorOso = vector entero[[1, 2], [3, 4], [3, 4]];
